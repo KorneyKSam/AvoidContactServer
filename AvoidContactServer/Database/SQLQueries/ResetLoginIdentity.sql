@@ -1,0 +1,2 @@
+﻿DBCC CHECKIDENT ('Login', RESEED, 0);
+GO
