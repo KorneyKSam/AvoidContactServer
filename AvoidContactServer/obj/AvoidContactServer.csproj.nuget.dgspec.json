@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\AvoidContactServer\\AvoidContactServer\\AvoidContactServer.csproj": {}
+    "D:\\GitHub\\AvoidContactServer\\AvoidContactServer\\AvoidContactServer.csproj": {}
   },
   "projects": {
-    "D:\\AvoidContactServer\\AvoidContactServer\\AvoidContactServer.csproj": {
+    "D:\\GitHub\\AvoidContactServer\\AvoidContactServer\\AvoidContactServer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\AvoidContactServer\\AvoidContactServer\\AvoidContactServer.csproj",
+        "projectUniqueName": "D:\\GitHub\\AvoidContactServer\\AvoidContactServer\\AvoidContactServer.csproj",
         "projectName": "AvoidContactServer",
-        "projectPath": "D:\\AvoidContactServer\\AvoidContactServer\\AvoidContactServer.csproj",
+        "projectPath": "D:\\GitHub\\AvoidContactServer\\AvoidContactServer\\AvoidContactServer.csproj",
         "packagesPath": "C:\\Users\\korne\\.nuget\\packages\\",
-        "outputPath": "D:\\AvoidContactServer\\AvoidContactServer\\obj\\",
+        "outputPath": "D:\\GitHub\\AvoidContactServer\\AvoidContactServer\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\korne\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -39,6 +39,20 @@
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
+          "dependencies": {
+            "RiptideNetworking.Riptide": {
+              "target": "Package",
+              "version": "[2.0.0, )"
+            },
+            "System.Configuration.ConfigurationManager": {
+              "target": "Package",
+              "version": "[7.0.0, )"
+            },
+            "System.Data.SqlClient": {
+              "target": "Package",
+              "version": "[4.8.5, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",

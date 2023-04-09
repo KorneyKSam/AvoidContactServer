@@ -1,0 +1,15 @@
+D:\GitHub\AvoidContactServer\AvoidContactServer\bin\Debug\net6.0\AvoidContactServer.exe
+D:\GitHub\AvoidContactServer\AvoidContactServer\bin\Debug\net6.0\AvoidContactServer.deps.json
+D:\GitHub\AvoidContactServer\AvoidContactServer\bin\Debug\net6.0\AvoidContactServer.runtimeconfig.json
+D:\GitHub\AvoidContactServer\AvoidContactServer\bin\Debug\net6.0\AvoidContactServer.dll
+D:\GitHub\AvoidContactServer\AvoidContactServer\bin\Debug\net6.0\AvoidContactServer.pdb
+D:\GitHub\AvoidContactServer\AvoidContactServer\obj\Debug\net6.0\AvoidContactServer.csproj.AssemblyReference.cache
+D:\GitHub\AvoidContactServer\AvoidContactServer\obj\Debug\net6.0\AvoidContactServer.GeneratedMSBuildEditorConfig.editorconfig
+D:\GitHub\AvoidContactServer\AvoidContactServer\obj\Debug\net6.0\AvoidContactServer.AssemblyInfoInputs.cache
+D:\GitHub\AvoidContactServer\AvoidContactServer\obj\Debug\net6.0\AvoidContactServer.AssemblyInfo.cs
+D:\GitHub\AvoidContactServer\AvoidContactServer\obj\Debug\net6.0\AvoidContactServer.csproj.CoreCompileInputs.cache
+D:\GitHub\AvoidContactServer\AvoidContactServer\obj\Debug\net6.0\AvoidContactServer.dll
+D:\GitHub\AvoidContactServer\AvoidContactServer\obj\Debug\net6.0\refint\AvoidContactServer.dll
+D:\GitHub\AvoidContactServer\AvoidContactServer\obj\Debug\net6.0\AvoidContactServer.pdb
+D:\GitHub\AvoidContactServer\AvoidContactServer\obj\Debug\net6.0\AvoidContactServer.genruntimeconfig.cache
+D:\GitHub\AvoidContactServer\AvoidContactServer\obj\Debug\net6.0\ref\AvoidContactServer.dll
