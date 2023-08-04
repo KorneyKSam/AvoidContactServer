@@ -1,5 +1,5 @@
-﻿using AvoidContactServer.Database.Networking.Models;
-using AvoidContactServer.Interfaces.Database;
+﻿using AvoidContactServer.Database.Interfaces;
+using AvoidContactServer.Database.Networking.Models;
 using System.Data;
 using System.Data.SqlClient;
 

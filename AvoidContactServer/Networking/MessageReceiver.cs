@@ -1,6 +1,6 @@
-﻿using AvoidContactServer.Database.Networking.Enums;
-using AvoidContactServer.Database.Networking.Models;
-using AvoidContactServer.Interfaces.Networking;
+﻿using AvoidContactServer.Database.Networking.Models;
+using AvoidContactServer.Networking.Enums.Commands;
+using AvoidContactServer.Networking.Interfaces;
 using Riptide;
 
 namespace AvoidContactServer.Database.Networking

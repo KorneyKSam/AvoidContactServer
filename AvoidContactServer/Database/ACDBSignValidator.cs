@@ -1,6 +1,6 @@
-﻿using AvoidContactServer.Database.Networking.Enums;
+﻿using AvoidContactServer.Database.Interfaces;
 using AvoidContactServer.Database.Networking.Models;
-using AvoidContactServer.Interfaces.Database;
+using AvoidContactServer.Networking.Enums.Results;
 using System.Text.RegularExpressions;
 
 namespace AvoidContactServer.Database

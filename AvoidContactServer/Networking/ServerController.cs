@@ -1,6 +1,6 @@
 ﻿using AvoidContactServer.Database.Networking.Models;
-using AvoidContactServer.Interfaces;
-using AvoidContactServer.Interfaces.Networking;
+using AvoidContactServer.Debugger.Interfaces;
+using AvoidContactServer.Networking.Interfaces;
 using Riptide;
 using Riptide.Utils;
 
@@ -8,26 +8,74 @@ namespace AvoidContactServer.Networking
 {
     public class ServerController : IServerController
     {
-        private const string ServerStartedMessage = "An attempt to start the server for the second time has been noticed!";
+        private Dictionary<string, Action> m_ServerCoommands;
 
-        private IMessageLogger m_MessageLogger;
+        private const string ServerStartedMessage = "An attempt to start the server for the second time has been noticed!";
+        private const string ServerCommandsMessage = "Server command list: ";
+        private const string InvalidCommandMessage = "Invalid command: ";
+
+        private IDebugger m_MessageLogger;
         private Server m_Server;
         private SignedPlayers m_SignedPlayers;
 
-        public ServerController(IMessageLogger messageLogger, Server server, SignedPlayers signedPlayers)
+        private ushort m_Port;
+        private ushort m_MaxClientCount;
+
+        public ServerController(IDebugger messageLogger, Server server, SignedPlayers signedPlayers)
         {
             m_MessageLogger = messageLogger;
             RiptideLogger.Initialize(m_MessageLogger.Log, m_MessageLogger.LogInfo, m_MessageLogger.LogWarning, m_MessageLogger.LogError, false);
             m_Server = server;
             m_SignedPlayers = signedPlayers;
+            m_ServerCoommands = GetServerCommands();
+
+            ShowServerCommandsMessage();
+
+            m_Port = 7777;
+            m_MaxClientCount = 10;
         }
 
-        public void Start(ushort port, ushort maxClientCount)
+        public void EnterCommand(string? command)
+        {
+            if (!string.IsNullOrEmpty(command))
+            {
+                if (m_ServerCoommands.ContainsKey(command))
+                {
+                    m_ServerCoommands[command].Invoke();
+                }
+                else
+                {
+                    m_MessageLogger.LogWarning(InvalidCommandMessage + command);
+                }
+            }
+        }
+
+        private Dictionary<string, Action> GetServerCommands()
+        {
+            return new Dictionary<string, Action>()
+            {
+                { "Start", Start },
+                { "Stop", Stop },
+            };
+        }
+
+        private void ShowServerCommandsMessage()
+        {
+            m_MessageLogger.Log(ServerCommandsMessage);
+
+            foreach (var serverCommand in m_ServerCoommands.Keys)
+            {
+                m_MessageLogger.Log(serverCommand);
+            }
+            m_MessageLogger.Log(string.Empty);
+        }
+
+        private void Start()
         {
             if (!m_Server.IsRunning)
             {
                 AddServerListeners();
-                m_Server.Start(port, maxClientCount);
+                m_Server.Start(m_Port, m_MaxClientCount);
                 FixedUpdate();
             }
             else
@@ -36,7 +84,7 @@ namespace AvoidContactServer.Networking
             }
         }
 
-        public void Stop()
+        private void Stop()
         {
             if (m_Server.IsRunning)
             {
@@ -54,6 +102,16 @@ namespace AvoidContactServer.Networking
             }
         }
 
+        private async void FixedUpdate()
+        {
+            while (m_Server.IsRunning)
+            {
+                m_Server.Update();
+
+                await Task.Delay(20);
+            }
+        }
+
         private void AddServerListeners()
         {
             RemoveServerListeners();
@@ -63,16 +121,6 @@ namespace AvoidContactServer.Networking
         private void RemoveServerListeners()
         {
             m_Server.ClientDisconnected -= OnClientDisconnectedHandler;
-        }
-
-        private async void FixedUpdate()
-        {
-            while (m_Server.IsRunning)
-            {
-                m_Server.Update();
-
-                await Task.Delay(20);
-            }
         }
     }
 }

@@ -1,5 +1,5 @@
-﻿using AvoidContactServer.Interfaces;
-using AvoidContactServer.Interfaces.Database;
+﻿using AvoidContactServer.Database.Interfaces;
+using AvoidContactServer.Debugger.Interfaces;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
@@ -8,7 +8,7 @@ namespace AvoidContactServer.Database
 {
     public class ACDBConnector : IDBConnector
     {
-        public ACDBConnector(IMessageLogger logger)
+        public ACDBConnector(IDebugger logger)
         {
             m_Logger = logger;
             m_SQLConnection = CreateSQlConnection();
@@ -46,6 +46,6 @@ namespace AvoidContactServer.Database
         private const string ConnectionNotOpened = "Подключение не установлено!";
 
         private SqlConnection m_SQLConnection;
-        private IMessageLogger m_Logger;
+        private IDebugger m_Logger;
     }
 }
