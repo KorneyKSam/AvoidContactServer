@@ -2,7 +2,7 @@
 
 namespace AvoidContactServer.Logger
 {
-    public class Debugger : IDebugger
+    public class AdvancedDebugger : IDebugger
     {
         public void Log(string message)
         {

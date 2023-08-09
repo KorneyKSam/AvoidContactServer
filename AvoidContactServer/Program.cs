@@ -1,5 +1,4 @@
-﻿using AvoidContactServer;
-using AvoidContactServer.Database;
+﻿using AvoidContactServer.Database;
 using AvoidContactServer.Database.Interfaces;
 using AvoidContactServer.Database.Networking;
 using AvoidContactServer.Database.Networking.Models;
@@ -11,28 +10,46 @@ using AvoidContactServer.Networking.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Riptide;
 
-var serviceProvider = GetServiceCollection().BuildServiceProvider();
-var serverController = serviceProvider.GetService<IServerController>();
-var messageLogger = serviceProvider.GetService<IDebugger>();
-MessageReceiver.Initialize(serviceProvider.GetService<ISignCommandsExecutor>());
-
-while (true)
+namespace AvoidContactServer
 {
-    messageLogger.Log("Enter command:");
-    serverController.EnterCommand(Console.ReadLine());
-}
+    class Program()
+    {
+        private static ServiceProvider m_ServiceProvider;
+        private static IServerController m_ServerController;
+        private static IDebugger m_Debugger;
 
-static ServiceCollection GetServiceCollection()
-{
-    var services = new ServiceCollection();
-    services.AddSingleton<IDebugger, Debugger>();
-    services.AddSingleton<SignedPlayers>();
-    services.AddSingleton<IDBConnector, ACDBConnector>();
-    services.AddSingleton<ILoginRepository, ACDBLoginRepository>();
-    services.AddSingleton<IUserSignValidator, ACDBSignValidator>();
-    services.AddSingleton<Server>();
-    services.AddSingleton<IServerController, ServerController>();
-    services.AddSingleton<MessageSender>();
-    services.AddSingleton<ISignCommandsExecutor, SignCommandsExecutor>();
-    return services;
+        public static void Main(string[] args)
+        {
+            m_ServiceProvider = GetServiceCollection().BuildServiceProvider();
+            m_ServerController = m_ServiceProvider.GetService<IServerController>();
+            m_Debugger = m_ServiceProvider.GetService<IDebugger>();
+            MessageReceiver.Initialize(m_ServiceProvider.GetService<ISignCommandsExecutor>());
+
+            StartEnterCommands();
+        }
+
+        private static void StartEnterCommands()
+        {
+            while (true)
+            {
+                m_Debugger.Log("Enter command:");
+                m_ServerController.EnterCommand(Console.ReadLine());
+            }
+        }
+
+        private static ServiceCollection GetServiceCollection()
+        {
+            var services = new ServiceCollection();
+            services.AddSingleton<IDebugger, AdvancedDebugger>();
+            services.AddSingleton<SignedPlayers>();
+            services.AddSingleton<IDBConnector, ACDBConnector>();
+            services.AddSingleton<ILoginRepository, ACDBLoginRepository>();
+            services.AddSingleton<IUserSignValidator, ACDBSignValidator>();
+            services.AddSingleton<Server>();
+            services.AddSingleton<IServerController, ServerController>();
+            services.AddSingleton<MessageSender>();
+            services.AddSingleton<ISignCommandsExecutor, SignCommandsExecutor>();
+            return services;
+        }
+    }
 }
