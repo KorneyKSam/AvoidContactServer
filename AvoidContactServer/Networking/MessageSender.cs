@@ -13,10 +13,11 @@ namespace AvoidContactServer.Database.Networking
             m_Server = server;
         }
 
-        public void SendSignInResult(ushort playerId, SignInResult result)
+        public void SendSignInResult(ushort playerId, SignInResult result, string authorizationToken)
         {
             var message = Message.Create(MessageSendMode.Reliable, (ushort)ServerCommands.SignInResult);
             message.AddByte((byte)result);
+            message.AddString(authorizationToken);
             m_Server.Send(message, playerId);
         }
 
@@ -24,13 +25,6 @@ namespace AvoidContactServer.Database.Networking
         {
             var message = Message.Create(MessageSendMode.Reliable, (ushort)ServerCommands.SignUpResult);
             message.AddByte((byte)result);
-            m_Server.Send(message, playerId);
-        }
-
-        public void SendSignOutResult(ushort playerId, bool success, string resultMessage)
-        {
-            var message = Message.Create(MessageSendMode.Reliable, (ushort)ServerCommands.SignOutResult);
-            message.AddBool(success);
             m_Server.Send(message, playerId);
         }
     }

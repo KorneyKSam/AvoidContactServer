@@ -1,6 +1,4 @@
-﻿using AvoidContactServer.Database.Networking.Models;
-
-namespace AvoidContactServer.Database.Interfaces
+﻿namespace AvoidContactServer.Database.Interfaces
 {
     public interface ILoginRepository
     {

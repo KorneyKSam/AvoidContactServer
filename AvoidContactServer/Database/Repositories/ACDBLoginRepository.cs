@@ -1,5 +1,4 @@
 ﻿using AvoidContactServer.Database.Interfaces;
-using AvoidContactServer.Database.Networking.Models;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -16,7 +15,7 @@ namespace AvoidContactServer.Database.Repositories
 
         public void AddPlayer(SignedPlayerModel signUpModel)
         {
-            using var sqlCommand = GetSqlCommand(ACDBSQLCommands.AddLogin);
+            using var sqlCommand = GetSqlCommand(ACDBSQLCommands.InsertIntoLogin);
             sqlCommand.Parameters.AddWithValue("Login", signUpModel.Login);
             sqlCommand.Parameters.AddWithValue("Password", signUpModel.Password);
             sqlCommand.Parameters.AddWithValue("Email", signUpModel.Email);
@@ -27,16 +26,24 @@ namespace AvoidContactServer.Database.Repositories
 
         public SignedPlayerModel TryToGetSignedPlayerByLogin(string login)
         {
-            using var sqlCommand = GetSqlCommand(ACDBSQLCommands.GetLogin);
+            using var sqlCommand = GetSqlCommand(ACDBSQLCommands.SelectFromLogin);
             sqlCommand.Parameters.AddWithValue("Login", login);
-            var dataAdapter = new SqlDataAdapter(sqlCommand);
+            using var sqlDataReader = sqlCommand.ExecuteReader();
 
-            DataSet dataSet = new DataSet();
-            dataAdapter.Fill(dataSet);
-
-            var datasetTable = dataSet.Tables[0];
-
-            return GetSignedPlayerFromTable();
+            if (sqlDataReader.Read())
+            {
+                var signedPlayerModel = new SignedPlayerModel()
+                {
+                    Login = Convert.ToString(sqlDataReader["Login"]),
+                    Password = Convert.ToString(sqlDataReader["Password"]),
+                    Email = Convert.ToString(sqlDataReader["Email"])
+                };
+                return signedPlayerModel;
+            }
+            else
+            {
+                return new SignedPlayerModel();
+            }
         }
 
         public SignedPlayerModel TryToGetSignedPlayerByEmail(string email)

@@ -1,5 +1,4 @@
-﻿using AvoidContactServer.Database.Networking.Models;
-using AvoidContactServer.Networking.Enums.Results;
+﻿using AvoidContactServer.Networking.Enums.Results;
 
 namespace AvoidContactServer.Database.Interfaces
 {

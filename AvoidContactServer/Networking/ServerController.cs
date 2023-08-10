@@ -1,6 +1,6 @@
-﻿using AvoidContactServer.Database.Networking.Models;
-using AvoidContactServer.Debugger.Interfaces;
+﻿using AvoidContactServer.Debugger.Interfaces;
 using AvoidContactServer.Networking.Interfaces;
+using AvoidContactServer.Networking.Sign;
 using Riptide;
 using Riptide.Utils;
 
@@ -16,17 +16,17 @@ namespace AvoidContactServer.Networking
 
         private IDebugger m_MessageLogger;
         private Server m_Server;
-        private SignedPlayers m_SignedPlayers;
+        private ISignCommandsExecutor m_SignCommandsExecutor;
 
         private ushort m_Port;
         private ushort m_MaxClientCount;
 
-        public ServerController(IDebugger messageLogger, Server server, SignedPlayers signedPlayers)
+        public ServerController(IDebugger messageLogger, Server server, ISignCommandsExecutor signCommandsExecutor)
         {
             m_MessageLogger = messageLogger;
             RiptideLogger.Initialize(m_MessageLogger.Log, m_MessageLogger.LogInfo, m_MessageLogger.LogWarning, m_MessageLogger.LogError, false);
             m_Server = server;
-            m_SignedPlayers = signedPlayers;
+            m_SignCommandsExecutor = signCommandsExecutor;
             m_ServerCoommands = GetServerCommands();
 
             ShowServerCommandsMessage();
@@ -93,13 +93,14 @@ namespace AvoidContactServer.Networking
             }
         }
 
+        private void OnClientConnectedHandler(object? sender, ServerConnectedEventArgs e)
+        {
+            m_MessageLogger.Log($"New Client, ID: {e.Client.Id}");
+        }
+
         private void OnClientDisconnectedHandler(object? sender, ServerDisconnectedEventArgs e)
         {
-            var disconnectedPlayer = m_SignedPlayers.List.FirstOrDefault(p => p.PlayerId == e.Client.Id);
-            if (disconnectedPlayer != null)
-            {
-                m_SignedPlayers.List.Remove(disconnectedPlayer);
-            }
+            m_SignCommandsExecutor.UnlinkPlayerIDAndToken(e.Client.Id);
         }
 
         private async void FixedUpdate()
@@ -115,11 +116,13 @@ namespace AvoidContactServer.Networking
         private void AddServerListeners()
         {
             RemoveServerListeners();
+            m_Server.ClientConnected += OnClientConnectedHandler;
             m_Server.ClientDisconnected += OnClientDisconnectedHandler;
         }
 
         private void RemoveServerListeners()
         {
+            m_Server.ClientConnected -= OnClientConnectedHandler;
             m_Server.ClientDisconnected -= OnClientDisconnectedHandler;
         }
     }

@@ -5,5 +5,6 @@
         SignIn = 1,
         SignUp = 2,
         SignOut = 3,
+        LinkToken = 4,
     }
 }

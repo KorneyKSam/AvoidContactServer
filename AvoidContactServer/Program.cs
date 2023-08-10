@@ -1,12 +1,12 @@
 ﻿using AvoidContactServer.Database;
 using AvoidContactServer.Database.Interfaces;
 using AvoidContactServer.Database.Networking;
-using AvoidContactServer.Database.Networking.Models;
 using AvoidContactServer.Database.Repositories;
 using AvoidContactServer.Debugger.Interfaces;
 using AvoidContactServer.Logger;
 using AvoidContactServer.Networking;
 using AvoidContactServer.Networking.Interfaces;
+using AvoidContactServer.Networking.Sign;
 using Microsoft.Extensions.DependencyInjection;
 using Riptide;
 
@@ -41,10 +41,10 @@ namespace AvoidContactServer
         {
             var services = new ServiceCollection();
             services.AddSingleton<IDebugger, AdvancedDebugger>();
-            services.AddSingleton<SignedPlayers>();
+            services.AddSingleton<SignsInfo>();
             services.AddSingleton<IDBConnector, ACDBConnector>();
             services.AddSingleton<ILoginRepository, ACDBLoginRepository>();
-            services.AddSingleton<IUserSignValidator, ACDBSignValidator>();
+            services.AddSingleton<IUserSignValidator, SignValidator>();
             services.AddSingleton<Server>();
             services.AddSingleton<IServerController, ServerController>();
             services.AddSingleton<MessageSender>();

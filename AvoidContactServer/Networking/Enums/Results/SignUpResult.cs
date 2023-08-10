@@ -1,6 +1,6 @@
 ﻿namespace AvoidContactServer.Networking.Enums.Results
 {
-    public enum SignUpResult : ushort
+    public enum SignUpResult : byte
     {
         Success = 0,
         LoginUsed = 1,

@@ -1,6 +1,5 @@
-﻿using AvoidContactServer.Database.Networking.Models;
-using AvoidContactServer.Networking.Enums.Commands;
-using AvoidContactServer.Networking.Interfaces;
+﻿using AvoidContactServer.Networking.Enums.Commands;
+using AvoidContactServer.Networking.Sign;
 using Riptide;
 
 namespace AvoidContactServer.Database.Networking
@@ -15,21 +14,27 @@ namespace AvoidContactServer.Database.Networking
         }
 
         [MessageHandler((ushort)ClientCommands.SignIn)]
-        public static void SignIn(ushort playerId, Message message)
+        public static void SignIn(ushort playerID, Message message)
         {
-            m_IServerCommandExecutor.TryToSignIn(playerId, message.GetString(), message.GetString());
+            m_IServerCommandExecutor.TryToSignIn(playerID, message.GetString(), message.GetString());
         }
 
         [MessageHandler((ushort)ClientCommands.SignUp)]
-        public static void SignUp(ushort playerId, Message message)
+        public static void SignUp(ushort playerID, Message message)
         {
-            m_IServerCommandExecutor.TryToSignUp(playerId, CreateSignedPlayerModel(message));
+            m_IServerCommandExecutor.TryToSignUp(playerID, CreateSignedPlayerModel(message));
         }
 
         [MessageHandler((ushort)ClientCommands.SignOut)]
-        public static void SignOut(ushort playerId, Message message)
+        public static void SignOut(ushort playerID, Message message)
         {
-            m_IServerCommandExecutor.SignOut(playerId);
+            m_IServerCommandExecutor.UnlinkPlayerIDAndToken(playerID);
+        }
+
+        [MessageHandler((ushort)ClientCommands.LinkToken)]
+        public static void LinkPlayerIdAndToken(ushort playerID, Message message)
+        {
+            m_IServerCommandExecutor.LinkPlayerIDAndToken(playerID, message.GetString());
         }
 
         private static SignedPlayerModel CreateSignedPlayerModel(Message message)

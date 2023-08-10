@@ -1,8 +1,8 @@
 ﻿namespace AvoidContactServer.Database
 {
-    internal static class ACDBSQLCommands
+    public static class ACDBSQLCommands
     {
-        internal const string AddLogin = "INSERT INTO [Login] (Login, Password, Email, RegistrationDate) VALUES (@Login, @Password, @Email, @RegistrationDate)";
-        internal const string GetLogin = "SELECT * FROM [Login] WHERE @Login";
+        public const string InsertIntoLogin = "INSERT INTO [Login] (Login, Password, Email, RegistrationDate) VALUES (@Login, @Password, @Email, @RegistrationDate)";
+        public const string SelectFromLogin = "SELECT * FROM [Login] WHERE Login LIKE @Login";
     }
 }
