@@ -1,5 +1,6 @@
-﻿using AvoidContactServer.Database.Interfaces;
-using AvoidContactServer.Debugger.Interfaces;
+﻿using AdvancedDebugger;
+using AvoidContactServer.Database.Interfaces;
+using AvoidContactServer.Debugging;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
@@ -8,9 +9,14 @@ namespace AvoidContactServer.Database
 {
     public class ACDBConnector : IDBConnector
     {
-        public ACDBConnector(IDebugger logger)
+        private const string ConnectionKey = "ACDB";
+        private const string ConnectionOpened = "Подключение установлено!";
+        private const string ConnectionNotOpened = "Подключение не установлено!";
+
+        private SqlConnection m_SQLConnection;
+
+        public ACDBConnector()
         {
-            m_Logger = logger;
             m_SQLConnection = CreateSQlConnection();
         }
 
@@ -26,11 +32,11 @@ namespace AvoidContactServer.Database
 
             if (m_SQLConnection.State == ConnectionState.Open)
             {
-                m_Logger.Log(ConnectionOpened);
+                Debugger.Log(ConnectionOpened, DebuggerLog.InfoDebug);
             }
             else
             {
-                m_Logger.LogError($"{ConnectionNotOpened} State: {m_SQLConnection.State}!");
+                Debugger.Log($"{ConnectionNotOpened} State: {m_SQLConnection.State}!", DebuggerLog.InfoDebug);
             }
 
             return m_SQLConnection;
@@ -40,12 +46,5 @@ namespace AvoidContactServer.Database
         {
             return ConfigurationManager.ConnectionStrings[ConnectionKey].ConnectionString;
         }
-
-        private const string ConnectionKey = "ACDB";
-        private const string ConnectionOpened = "Подключение установлено!";
-        private const string ConnectionNotOpened = "Подключение не установлено!";
-
-        private SqlConnection m_SQLConnection;
-        private IDebugger m_Logger;
     }
 }

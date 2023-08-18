@@ -2,13 +2,13 @@
 using AvoidContactServer.Database.Interfaces;
 using AvoidContactServer.Database.Networking;
 using AvoidContactServer.Database.Repositories;
-using AvoidContactServer.Debugger.Interfaces;
-using AvoidContactServer.Logger;
 using AvoidContactServer.Networking;
 using AvoidContactServer.Networking.Interfaces;
 using AvoidContactServer.Networking.Sign;
+using AdvancedDebugger;
 using Microsoft.Extensions.DependencyInjection;
 using Riptide;
+using AvoidContactServer.Debugging;
 
 namespace AvoidContactServer
 {
@@ -16,15 +16,13 @@ namespace AvoidContactServer
     {
         private static ServiceProvider m_ServiceProvider;
         private static IServerController m_ServerController;
-        private static IDebugger m_Debugger;
 
         public static void Main(string[] args)
         {
+            DebuggerInitializer.Initialize();
             m_ServiceProvider = GetServiceCollection().BuildServiceProvider();
             m_ServerController = m_ServiceProvider.GetService<IServerController>();
-            m_Debugger = m_ServiceProvider.GetService<IDebugger>();
             MessageReceiver.Initialize(m_ServiceProvider.GetService<ISignCommandsExecutor>());
-
             StartEnterCommands();
         }
 
@@ -32,7 +30,7 @@ namespace AvoidContactServer
         {
             while (true)
             {
-                m_Debugger.Log("Enter command:");
+                Debugger.Log("Enter command:", DebuggerLog.InfoDebug);
                 m_ServerController.EnterCommand(Console.ReadLine());
             }
         }
@@ -40,7 +38,6 @@ namespace AvoidContactServer
         private static ServiceCollection GetServiceCollection()
         {
             var services = new ServiceCollection();
-            services.AddSingleton<IDebugger, AdvancedDebugger>();
             services.AddSingleton<SignsInfo>();
             services.AddSingleton<IDBConnector, ACDBConnector>();
             services.AddSingleton<ILoginRepository, ACDBLoginRepository>();

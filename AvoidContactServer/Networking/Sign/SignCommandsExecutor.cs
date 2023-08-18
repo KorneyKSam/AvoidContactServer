@@ -1,7 +1,8 @@
-﻿using AvoidContactServer.Database;
+﻿using AdvancedDebugger;
+using AvoidContactServer.Database;
 using AvoidContactServer.Database.Interfaces;
 using AvoidContactServer.Database.Networking;
-using AvoidContactServer.Debugger.Interfaces;
+using AvoidContactServer.Debugging;
 using AvoidContactServer.Networking.Enums.Results;
 
 namespace AvoidContactServer.Networking.Sign
@@ -10,13 +11,11 @@ namespace AvoidContactServer.Networking.Sign
     {
         private readonly ILoginRepository m_LoginRepository;
         private readonly IUserSignValidator m_UserSignValidator;
-        private readonly IDebugger m_MessageLogger;
         private readonly MessageSender m_MessageSender;
         private SignsInfo m_SignsInfo;
 
         public SignCommandsExecutor(ILoginRepository loginRepository,
                                     IUserSignValidator userLogInValidator,
-                                    IDebugger messageLogger,
                                     MessageSender messageSender,
                                     SignsInfo signedPlayers)
         {
@@ -24,7 +23,6 @@ namespace AvoidContactServer.Networking.Sign
             m_UserSignValidator = userLogInValidator;
             m_MessageSender = messageSender;
             m_SignsInfo = signedPlayers;
-            m_MessageLogger = messageLogger;
         }
 
         public void TryToSignIn(ushort playerId, string login, string password)
@@ -70,7 +68,7 @@ namespace AvoidContactServer.Networking.Sign
                     Login = foundPlayer.Login,
                     AuthorizationToken = foundPlayer.AuthorizationToken,
                 });
-                m_MessageLogger.Log($"Player {foundPlayer.Login} (ID: {playerId}) unauthorized (Token: {foundPlayer.AuthorizationToken}");
+                Debugger.Log($"Player {foundPlayer.Login} (ID: {playerId}) unauthorized (Token: {foundPlayer.AuthorizationToken}", DebuggerLog.InfoDebug);
             }
         }
 
@@ -86,7 +84,7 @@ namespace AvoidContactServer.Networking.Sign
                     Login = foundToken.Login,
                     AuthorizationToken = authorizationToken,
                 });
-                m_MessageLogger.Log($"Player {foundToken.Login} (ID: {playerId}) authorized (Token: {foundToken.AuthorizationToken}");
+                Debugger.Log($"Player {foundToken.Login} (ID: {playerId}) authorized (Token: {foundToken.AuthorizationToken}", DebuggerLog.InfoDebug);
             }
         }
     }

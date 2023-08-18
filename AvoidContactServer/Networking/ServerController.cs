@@ -1,4 +1,5 @@
-﻿using AvoidContactServer.Debugger.Interfaces;
+﻿using AdvancedDebugger;
+using AvoidContactServer.Debugging;
 using AvoidContactServer.Networking.Interfaces;
 using AvoidContactServer.Networking.Sign;
 using Riptide;
@@ -14,17 +15,15 @@ namespace AvoidContactServer.Networking
         private const string ServerCommandsMessage = "Server command list: ";
         private const string InvalidCommandMessage = "Invalid command: ";
 
-        private IDebugger m_MessageLogger;
         private Server m_Server;
         private ISignCommandsExecutor m_SignCommandsExecutor;
 
         private ushort m_Port;
         private ushort m_MaxClientCount;
 
-        public ServerController(IDebugger messageLogger, Server server, ISignCommandsExecutor signCommandsExecutor)
+        public ServerController(Server server, ISignCommandsExecutor signCommandsExecutor)
         {
-            m_MessageLogger = messageLogger;
-            RiptideLogger.Initialize(m_MessageLogger.Log, m_MessageLogger.LogInfo, m_MessageLogger.LogWarning, m_MessageLogger.LogError, false);
+            RiptideLogger.Initialize(Console.WriteLine, Console.WriteLine, Console.WriteLine, Console.WriteLine, false);
             m_Server = server;
             m_SignCommandsExecutor = signCommandsExecutor;
             m_ServerCoommands = GetServerCommands();
@@ -45,7 +44,7 @@ namespace AvoidContactServer.Networking
                 }
                 else
                 {
-                    m_MessageLogger.LogWarning(InvalidCommandMessage + command);
+                    Debugger.Log(InvalidCommandMessage + command, DebuggerLog.InfoWarning);
                 }
             }
         }
@@ -61,13 +60,12 @@ namespace AvoidContactServer.Networking
 
         private void ShowServerCommandsMessage()
         {
-            m_MessageLogger.Log(ServerCommandsMessage);
+            Debugger.Log(ServerCommandsMessage, DebuggerLog.InfoDebug);
 
             foreach (var serverCommand in m_ServerCoommands.Keys)
             {
-                m_MessageLogger.Log(serverCommand);
+                Debugger.Log(serverCommand, DebuggerLog.InfoDebug);
             }
-            m_MessageLogger.Log(string.Empty);
         }
 
         private void Start()
@@ -80,7 +78,7 @@ namespace AvoidContactServer.Networking
             }
             else
             {
-                m_MessageLogger.LogWarning(ServerStartedMessage);
+                Debugger.Log(ServerStartedMessage, DebuggerLog.InfoDebug);
             }
         }
 
@@ -95,7 +93,7 @@ namespace AvoidContactServer.Networking
 
         private void OnClientConnectedHandler(object? sender, ServerConnectedEventArgs e)
         {
-            m_MessageLogger.Log($"New Client, ID: {e.Client.Id}");
+            Debugger.Log($"New Client, ID: {e.Client.Id}", DebuggerLog.InfoDebug);
         }
 
         private void OnClientDisconnectedHandler(object? sender, ServerDisconnectedEventArgs e)
