@@ -9,17 +9,14 @@ namespace AvoidContactServer.Networking.Sign
 {
     public class SignCommandsExecutor : ISignCommandsExecutor
     {
-        private readonly ILoginRepository m_LoginRepository;
         private readonly IUserSignValidator m_UserSignValidator;
         private readonly MessageSender m_MessageSender;
         private SignsInfo m_SignsInfo;
 
-        public SignCommandsExecutor(ILoginRepository loginRepository,
-                                    IUserSignValidator userLogInValidator,
+        public SignCommandsExecutor(IUserSignValidator userLogInValidator,
                                     MessageSender messageSender,
                                     SignsInfo signedPlayers)
         {
-            m_LoginRepository = loginRepository;
             m_UserSignValidator = userLogInValidator;
             m_MessageSender = messageSender;
             m_SignsInfo = signedPlayers;

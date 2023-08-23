@@ -6,8 +6,8 @@ namespace AvoidContactServer.Networking.Sign
 {
     internal class SignValidator : IUserSignValidator
     {
-        private ILoginRepository m_LoginRepository;
         private SignsInfo m_SignedPlayers;
+        private ILoginRepository m_LoginRepository;
         private CommonSignValidator m_CommonSignValidator;
 
         public SignValidator(ILoginRepository loginRepository, SignsInfo signedPlayers)
@@ -29,36 +29,34 @@ namespace AvoidContactServer.Networking.Sign
                 {
                     return SignInResult.WrongLoginOrPassword;
                 }
-                else
-                {
-                    if (m_SignedPlayers.SignedPlayers.Any(p => p.Login == login))
-                    {
-                        return SignInResult.AccountIsOccupied;
-                    }
 
-                    return SignInResult.Success;
+                if (m_SignedPlayers.SignedPlayers.Any(p => p.Login == login))
+                {
+                    return SignInResult.AccountIsOccupied;
                 }
             }
 
             return result;
         }
 
-        public SignUpResult CheckSignUp(SignedPlayerInfo signUpModel)
+        public SignUpResult CheckSignUp(SignedPlayerInfo signedPlayerInfo)
         {
-            var result = m_CommonSignValidator.CheckSignUp(signUpModel);
+            var result = m_CommonSignValidator.CheckSignUp(signedPlayerInfo);
             if (result == SignUpResult.Success)
             {
-                var modelFromRepository = m_LoginRepository.TryToGetSignedPlayerByEmail(signUpModel.Email);
+                var modelFromRepository = m_LoginRepository.TryToGetSignedPlayerByEmail(signedPlayerInfo.Email);
                 if (modelFromRepository != null)
                 {
                     return SignUpResult.EmailUsed;
                 }
 
-                modelFromRepository = m_LoginRepository.TryToGetSignedPlayerByLogin(signUpModel.Login);
+                modelFromRepository = m_LoginRepository.TryToGetSignedPlayerByLogin(signedPlayerInfo.Login);
                 if (modelFromRepository != null)
                 {
                     return SignUpResult.LoginUsed;
                 }
+
+                m_LoginRepository.AddPlayer(signedPlayerInfo);
             }
 
             return result;
