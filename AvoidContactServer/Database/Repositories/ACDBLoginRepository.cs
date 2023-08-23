@@ -1,4 +1,5 @@
-﻿using AvoidContactServer.Database.Interfaces;
+﻿using AvoidContactCommon.Sign;
+using AvoidContactServer.Database.Interfaces;
 using System.Data;
 using System.Data.SqlClient;
 
@@ -13,7 +14,7 @@ namespace AvoidContactServer.Database.Repositories
             m_SqlConnection = dBConnector.GetSqlConnection();
         }
 
-        public void AddPlayer(SignedPlayerModel signUpModel)
+        public void AddPlayer(SignedPlayerInfo signUpModel)
         {
             using var sqlCommand = GetSqlCommand(ACDBSQLCommands.InsertIntoLogin);
             sqlCommand.Parameters.AddWithValue("Login", signUpModel.Login);
@@ -24,7 +25,7 @@ namespace AvoidContactServer.Database.Repositories
             Console.WriteLine(sqlCommand.ExecuteNonQuery().ToString());
         }
 
-        public SignedPlayerModel TryToGetSignedPlayerByLogin(string login)
+        public SignedPlayerInfo TryToGetSignedPlayerByLogin(string login)
         {
             using var sqlCommand = GetSqlCommand(ACDBSQLCommands.SelectFromLogin);
             sqlCommand.Parameters.AddWithValue("Login", login);
@@ -32,7 +33,7 @@ namespace AvoidContactServer.Database.Repositories
 
             if (sqlDataReader.Read())
             {
-                var signedPlayerModel = new SignedPlayerModel()
+                var signedPlayerModel = new SignedPlayerInfo()
                 {
                     Login = Convert.ToString(sqlDataReader["Login"]),
                     Password = Convert.ToString(sqlDataReader["Password"]),
@@ -42,11 +43,11 @@ namespace AvoidContactServer.Database.Repositories
             }
             else
             {
-                return new SignedPlayerModel();
+                return new SignedPlayerInfo();
             }
         }
 
-        public SignedPlayerModel TryToGetSignedPlayerByEmail(string email)
+        public SignedPlayerInfo TryToGetSignedPlayerByEmail(string email)
         {
             return GetSignedPlayerFromTable();
         }
@@ -56,9 +57,9 @@ namespace AvoidContactServer.Database.Repositories
             return new SqlCommand(command, m_SqlConnection);
         }
 
-        private SignedPlayerModel GetSignedPlayerFromTable(/*TODO: parse table values*/)
+        private SignedPlayerInfo GetSignedPlayerFromTable(/*TODO: parse table values*/)
         {
-            return new SignedPlayerModel();
+            return new SignedPlayerInfo();
         }
     }
 }

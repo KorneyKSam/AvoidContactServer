@@ -1,4 +1,5 @@
-﻿using AvoidContactServer.Networking.Enums.Commands;
+﻿using AvoidContactCommon.Sign;
+using AvoidContactServer.Networking.Enums.Commands;
 using AvoidContactServer.Networking.Sign;
 using Riptide;
 
@@ -37,9 +38,9 @@ namespace AvoidContactServer.Database.Networking
             m_IServerCommandExecutor.LinkPlayerIDAndToken(playerID, message.GetString());
         }
 
-        private static SignedPlayerModel CreateSignedPlayerModel(Message message)
+        private static SignedPlayerInfo CreateSignedPlayerModel(Message message)
         {
-            return new SignedPlayerModel()
+            return new SignedPlayerInfo()
             {
                 Login = message.GetString(),
                 Password = message.GetString(),

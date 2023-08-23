@@ -1,33 +1,35 @@
-﻿using AvoidContactServer.Database;
+﻿using AvoidContactCommon.Sign;
+using AvoidContactCommon.Validation;
 using AvoidContactServer.Database.Interfaces;
-using AvoidContactServer.Networking.Enums.Results;
-using System.Text.RegularExpressions;
 
 namespace AvoidContactServer.Networking.Sign
 {
     internal class SignValidator : IUserSignValidator
     {
-        private const string m_EmailRegexPattern = @"^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}" +
-                                                   @"\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\" +
-                                                   @".)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$";
-
         private ILoginRepository m_LoginRepository;
         private SignsInfo m_SignedPlayers;
-        private Regex m_EmailRegex;
+        private CommonSignValidator m_CommonSignValidator;
 
         public SignValidator(ILoginRepository loginRepository, SignsInfo signedPlayers)
         {
             m_LoginRepository = loginRepository;
             m_SignedPlayers = signedPlayers;
+            m_CommonSignValidator = new CommonSignValidator();
         }
 
         public SignInResult CheckSignIn(string login, string password)
         {
-            if (!string.IsNullOrEmpty(login) &&
-                !string.IsNullOrEmpty(password))
+            var result = m_CommonSignValidator.CheckSignIn(login, password);
+
+            if (result == SignInResult.Success)
             {
                 var modelFromRepository = m_LoginRepository.TryToGetSignedPlayerByLogin(login);
-                if (modelFromRepository != null && modelFromRepository.Password == password)
+
+                if (modelFromRepository == null || modelFromRepository.Password != password)
+                {
+                    return SignInResult.WrongLoginOrPassword;
+                }
+                else
                 {
                     if (m_SignedPlayers.SignedPlayers.Any(p => p.Login == login))
                     {
@@ -37,14 +39,14 @@ namespace AvoidContactServer.Networking.Sign
                     return SignInResult.Success;
                 }
             }
-            return SignInResult.WrongLoginOrPassword;
+
+            return result;
         }
 
-        public SignUpResult CheckSignUp(SignedPlayerModel signUpModel)
+        public SignUpResult CheckSignUp(SignedPlayerInfo signUpModel)
         {
-            bool isEmailValid = IsValidEmail(signUpModel.Email);
-
-            if (isEmailValid)
+            var result = m_CommonSignValidator.CheckSignUp(signUpModel);
+            if (result == SignUpResult.Success)
             {
                 var modelFromRepository = m_LoginRepository.TryToGetSignedPlayerByEmail(signUpModel.Email);
                 if (modelFromRepository != null)
@@ -59,62 +61,7 @@ namespace AvoidContactServer.Networking.Sign
                 }
             }
 
-            bool isLoginValid = IsValidLogin(signUpModel.Login);
-            bool isPasswordValid = IsValidPassword(signUpModel.Password);
-
-
-            if (!isLoginValid && !isPasswordValid && !isEmailValid)
-            {
-                return SignUpResult.NotValidLoginAndPasswordAndEmail;
-            }
-
-            if (!isLoginValid && !isPasswordValid)
-            {
-                return SignUpResult.NotValidLoginAndPassword;
-            }
-
-            if (!isLoginValid && !isEmailValid)
-            {
-                return SignUpResult.NotValidLoginAndEmail;
-            }
-
-            if (!isPasswordValid && !isEmailValid)
-            {
-                return SignUpResult.NotValidEmailAndPassword;
-            }
-
-            if (!isLoginValid)
-            {
-                return SignUpResult.NotValidLogin;
-            }
-
-            if (!isPasswordValid)
-            {
-                return SignUpResult.NotValidPassword;
-            }
-
-            if (!isEmailValid)
-            {
-                return SignUpResult.NotValidEmail;
-            }
-
-            return SignUpResult.Success;
-        }
-
-        private bool IsValidLogin(string login)
-        {
-            return !string.IsNullOrEmpty(login);
-        }
-
-        private bool IsValidPassword(string password)
-        {
-            return !string.IsNullOrEmpty(password);
-        }
-
-        private bool IsValidEmail(string email)
-        {
-            m_EmailRegex ??= new Regex(m_EmailRegexPattern);
-            return !string.IsNullOrEmpty(email) && m_EmailRegex.IsMatch(email);
+            return result;
         }
     }
 }

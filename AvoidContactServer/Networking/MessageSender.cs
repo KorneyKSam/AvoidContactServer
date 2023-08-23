@@ -1,5 +1,5 @@
-﻿using AvoidContactServer.Networking.Enums.Commands;
-using AvoidContactServer.Networking.Enums.Results;
+﻿using AvoidContactCommon.Validation;
+using AvoidContactServer.Networking.Enums.Commands;
 using Riptide;
 
 namespace AvoidContactServer.Database.Networking
