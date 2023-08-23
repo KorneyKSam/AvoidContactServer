@@ -1,8 +1,4 @@
 ﻿using AdvancedDebugger;
-using AvoidContactServer.Database;
-using AvoidContactServer.Networking;
-using AvoidContactServer.Networking.Sign;
-using System.Drawing;
 
 namespace AvoidContactServer.Debugging
 {
@@ -20,9 +16,9 @@ namespace AvoidContactServer.Debugging
         {
             return new List<DebuggerLogType>()
             {
-                new DebuggerLogType(DebuggerLog.InfoDebug, Console.WriteLine, isLoggedToFile : false),
+                new DebuggerLogType(DebuggerLog.InfoDebug, Console.WriteLine, isLoggedToFile : false, showSystemInfo: false),
                 new DebuggerLogType(DebuggerLog.Debug, Console.WriteLine, isLoggedToFile : true),
-                new DebuggerLogType(DebuggerLog.InfoWarning, Console.WriteLine, isLoggedToFile : false),
+                new DebuggerLogType(DebuggerLog.InfoWarning, Console.WriteLine, isLoggedToFile : false, showSystemInfo : false),
                 new DebuggerLogType(DebuggerLog.Warning, Console.WriteLine, isLoggedToFile : true),
                 new DebuggerLogType(DebuggerLog.Error, Console.WriteLine, isLoggedToFile : true),
             };

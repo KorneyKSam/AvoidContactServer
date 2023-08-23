@@ -1,0 +1,3 @@
+[submodule "AvoidContactCommon"]
+	path = AvoidContactCommon
+	url = https://github.com/KorneyKSam/AvoidContactCommon
