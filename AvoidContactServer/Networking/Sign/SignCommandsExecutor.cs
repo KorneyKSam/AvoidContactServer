@@ -10,16 +10,19 @@ namespace AvoidContactServer.Networking.Sign
     public class SignCommandsExecutor : ISignCommandsExecutor
     {
         private readonly IUserSignValidator m_UserSignValidator;
+        private readonly ISignDataSetter m_SignDataSetter;
         private readonly MessageSender m_MessageSender;
         private SignsInfo m_SignsInfo;
 
         public SignCommandsExecutor(IUserSignValidator userLogInValidator,
+                                    ISignDataSetter signDataSetter,
                                     MessageSender messageSender,
                                     SignsInfo signedPlayers)
         {
             m_UserSignValidator = userLogInValidator;
             m_MessageSender = messageSender;
             m_SignsInfo = signedPlayers;
+            m_SignDataSetter = signDataSetter;
         }
 
         public void TryToSignIn(ushort playerId, string login, string password)
@@ -38,6 +41,10 @@ namespace AvoidContactServer.Networking.Sign
         public void TryToSignUp(ushort playerId, SignedPlayerInfo signedPlayerInfo)
         {
             var validationResult = m_UserSignValidator.CheckSignUp(signedPlayerInfo);
+            if (validationResult == SignUpResult.Success)
+            {
+                m_SignDataSetter.AddPlayer(signedPlayerInfo);
+            }
             m_MessageSender.SendSignUpResult(playerId, validationResult);
         }
 

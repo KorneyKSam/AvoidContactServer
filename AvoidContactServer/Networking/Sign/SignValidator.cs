@@ -7,12 +7,12 @@ namespace AvoidContactServer.Networking.Sign
     internal class SignValidator : IUserSignValidator
     {
         private SignsInfo m_SignedPlayers;
-        private ILoginRepository m_LoginRepository;
+        private ISignDataGetter m_SignDataGetter;
         private CommonSignValidator m_CommonSignValidator;
 
-        public SignValidator(ILoginRepository loginRepository, SignsInfo signedPlayers)
+        public SignValidator(ISignDataGetter loginRepository, SignsInfo signedPlayers)
         {
-            m_LoginRepository = loginRepository;
+            m_SignDataGetter = loginRepository;
             m_SignedPlayers = signedPlayers;
             m_CommonSignValidator = new CommonSignValidator();
         }
@@ -23,7 +23,7 @@ namespace AvoidContactServer.Networking.Sign
 
             if (result == SignInResult.Success)
             {
-                var modelFromRepository = m_LoginRepository.TryToGetSignedPlayerByLogin(login);
+                var modelFromRepository = m_SignDataGetter.TryToGetSignByLogin(login);
 
                 if (modelFromRepository == null || modelFromRepository.Password != password)
                 {
@@ -44,19 +44,15 @@ namespace AvoidContactServer.Networking.Sign
             var result = m_CommonSignValidator.CheckSignUp(signedPlayerInfo);
             if (result == SignUpResult.Success)
             {
-                var modelFromRepository = m_LoginRepository.TryToGetSignedPlayerByEmail(signedPlayerInfo.Email);
-                if (modelFromRepository != null)
+                if (m_SignDataGetter.CheckEmailUsed(signedPlayerInfo.Email))
                 {
                     return SignUpResult.EmailUsed;
                 }
 
-                modelFromRepository = m_LoginRepository.TryToGetSignedPlayerByLogin(signedPlayerInfo.Login);
-                if (modelFromRepository != null)
+                if (m_SignDataGetter.CheckLoginUsed(signedPlayerInfo.Login))
                 {
                     return SignUpResult.LoginUsed;
                 }
-
-                m_LoginRepository.AddPlayer(signedPlayerInfo);
             }
 
             return result;

@@ -40,7 +40,8 @@ namespace AvoidContactServer
             var services = new ServiceCollection();
             services.AddSingleton<SignsInfo>();
             services.AddSingleton<IDBConnector, ACDBConnector>();
-            services.AddSingleton<ILoginRepository, ACDBLoginRepository>();
+            services.AddSingleton<ISignDataGetter, ACDBSignRepository>();
+            services.AddSingleton<ISignDataSetter, ACDBSignRepository>();
             services.AddSingleton<IUserSignValidator, SignValidator>();
             services.AddSingleton<Server>();
             services.AddSingleton<IServerController, ServerController>();

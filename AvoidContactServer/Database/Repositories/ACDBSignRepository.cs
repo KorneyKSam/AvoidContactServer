@@ -1,22 +1,21 @@
 ﻿using AvoidContactCommon.Sign;
 using AvoidContactServer.Database.Interfaces;
-using System.Data;
 using System.Data.SqlClient;
 
 namespace AvoidContactServer.Database.Repositories
 {
-    public class ACDBLoginRepository : ILoginRepository
+    public class ACDBSignRepository : ISignDataGetter, ISignDataSetter
     {
         private SqlConnection m_SqlConnection;
 
-        public ACDBLoginRepository(IDBConnector dBConnector)
+        public ACDBSignRepository(IDBConnector dBConnector)
         {
             m_SqlConnection = dBConnector.GetSqlConnection();
         }
 
         public void AddPlayer(SignedPlayerInfo signUpModel)
         {
-            using var sqlCommand = GetSqlCommand(ACDBSQLCommands.InsertIntoLogin);
+            using var sqlCommand = GetSqlCommand(ACDBSQLCommands.InsertIntoSigns);
             sqlCommand.Parameters.AddWithValue("Login", signUpModel.Login);
             sqlCommand.Parameters.AddWithValue("Password", signUpModel.Password);
             sqlCommand.Parameters.AddWithValue("Email", signUpModel.Email);
@@ -25,9 +24,9 @@ namespace AvoidContactServer.Database.Repositories
             Console.WriteLine(sqlCommand.ExecuteNonQuery().ToString());
         }
 
-        public SignedPlayerInfo TryToGetSignedPlayerByLogin(string login)
+        public SignedPlayerInfo TryToGetSignByLogin(string login)
         {
-            using var sqlCommand = GetSqlCommand(ACDBSQLCommands.SelectFromLogin);
+            using var sqlCommand = GetSqlCommand(ACDBSQLCommands.SelectFromSignsByLogin);
             sqlCommand.Parameters.AddWithValue("Login", login);
             using var sqlDataReader = sqlCommand.ExecuteReader();
 
@@ -47,19 +46,31 @@ namespace AvoidContactServer.Database.Repositories
             }
         }
 
-        public SignedPlayerInfo TryToGetSignedPlayerByEmail(string email)
+        public bool CheckEmailUsed(string email)
         {
-            return GetSignedPlayerFromTable();
+            return ExecuteExistCommand("Email", email, ACDBSQLCommands.SelectEmail);
+        }
+
+        public bool CheckLoginUsed(string login)
+        {
+            return ExecuteExistCommand("Login", login, ACDBSQLCommands.SelectLogin);
+        }
+
+        public bool ExecuteExistCommand(string parametername, string parameterValue, string command)
+        {
+            using var sqlCommand = GetSqlCommand(command);
+            sqlCommand.Parameters.AddWithValue(parametername, parameterValue);
+            using var sqlDataReader = sqlCommand.ExecuteReader();
+            if (sqlDataReader.Read())
+            {
+                return sqlDataReader[parametername] != null;
+            }
+            return false;
         }
 
         private SqlCommand GetSqlCommand(string command)
         {
             return new SqlCommand(command, m_SqlConnection);
-        }
-
-        private SignedPlayerInfo GetSignedPlayerFromTable(/*TODO: parse table values*/)
-        {
-            return new SignedPlayerInfo();
         }
     }
 }
