@@ -1,14 +1,14 @@
-﻿using AvoidContactServer.Database;
+﻿using AdvancedDebugger;
+using AvoidContactServer.Database;
 using AvoidContactServer.Database.Interfaces;
 using AvoidContactServer.Database.Networking;
 using AvoidContactServer.Database.Repositories;
+using AvoidContactServer.Debugging;
 using AvoidContactServer.Networking;
 using AvoidContactServer.Networking.Interfaces;
 using AvoidContactServer.Networking.Sign;
-using AdvancedDebugger;
 using Microsoft.Extensions.DependencyInjection;
 using Riptide;
-using AvoidContactServer.Debugging;
 
 namespace AvoidContactServer
 {
