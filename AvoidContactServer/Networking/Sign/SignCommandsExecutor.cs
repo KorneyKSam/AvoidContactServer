@@ -38,12 +38,12 @@ namespace AvoidContactServer.Networking.Sign
             m_MessageSender.SendSignInResult(playerId, vailidationResult, authorizationToken);
         }
 
-        public void TryToSignUp(ushort playerId, SignedPlayerInfo signedPlayerInfo)
+        public void TryToSignUp(ushort playerId, SignInfo signInfo)
         {
-            var validationResult = m_UserSignValidator.CheckSignUp(signedPlayerInfo);
+            var validationResult = m_UserSignValidator.CheckSignUp(signInfo);
             if (validationResult == SignUpResult.Success)
             {
-                m_SignDataSetter.AddPlayer(signedPlayerInfo);
+                m_SignDataSetter.AddPlayer(signInfo);
             }
             m_MessageSender.SendSignUpResult(playerId, validationResult);
         }
@@ -78,6 +78,11 @@ namespace AvoidContactServer.Networking.Sign
                 });
                 Debugger.Log($"Player {foundPlayer.Login} (ID: {playerId}) unauthorized (Token: {foundPlayer.AuthorizationToken}", DebuggerLog.InfoDebug);
             }
+        }
+
+        public void UpdateCommonInfo(ushort playerId, PlayerInfo playerInfo)
+        {
+
         }
 
         private string GetAuthorizationToken(string login)

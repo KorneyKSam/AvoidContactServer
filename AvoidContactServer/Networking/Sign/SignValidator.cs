@@ -39,17 +39,17 @@ namespace AvoidContactServer.Networking.Sign
             return result;
         }
 
-        public SignUpResult CheckSignUp(SignedPlayerInfo signedPlayerInfo)
+        public SignUpResult CheckSignUp(SignInfo signInfo)
         {
-            var result = m_CommonSignValidator.CheckSignUp(signedPlayerInfo);
+            var result = m_CommonSignValidator.CheckSignUp(signInfo);
             if (result == SignUpResult.Success)
             {
-                if (m_SignDataGetter.CheckEmailUsed(signedPlayerInfo.Email))
+                if (m_SignDataGetter.CheckEmailUsed(signInfo.Email))
                 {
                     return SignUpResult.EmailUsed;
                 }
 
-                if (m_SignDataGetter.CheckLoginUsed(signedPlayerInfo.Login))
+                if (m_SignDataGetter.CheckLoginUsed(signInfo.Login))
                 {
                     return SignUpResult.LoginUsed;
                 }

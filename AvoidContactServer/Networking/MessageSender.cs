@@ -1,5 +1,5 @@
-﻿using AvoidContactCommon.Validation;
-using AvoidContactServer.Networking.Enums.Commands;
+﻿using AvoidContactCommon.Sign.Messages;
+using AvoidContactCommon.Validation;
 using Riptide;
 
 namespace AvoidContactServer.Database.Networking
@@ -15,7 +15,7 @@ namespace AvoidContactServer.Database.Networking
 
         public void SendSignInResult(ushort playerId, SignInResult result, string authorizationToken)
         {
-            var message = Message.Create(MessageSendMode.Reliable, (ushort)ServerCommands.SignInResult);
+            var message = Message.Create(MessageSendMode.Reliable, (ushort)ServerSignMessage.SignInResult);
             message.AddByte((byte)result);
             message.AddString(authorizationToken);
             m_Server.Send(message, playerId);
@@ -23,7 +23,7 @@ namespace AvoidContactServer.Database.Networking
 
         public void SendSignUpResult(ushort playerId, SignUpResult result)
         {
-            var message = Message.Create(MessageSendMode.Reliable, (ushort)ServerCommands.SignUpResult);
+            var message = Message.Create(MessageSendMode.Reliable, (ushort)ServerSignMessage.SignUpResult);
             message.AddByte((byte)result);
             m_Server.Send(message, playerId);
         }

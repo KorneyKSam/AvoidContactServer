@@ -13,18 +13,18 @@ namespace AvoidContactServer.Database.Repositories
             m_SqlConnection = dBConnector.GetSqlConnection();
         }
 
-        public void AddPlayer(SignedPlayerInfo signUpModel)
+        public void AddPlayer(SignInfo signInfo)
         {
             using var sqlCommand = GetSqlCommand(ACDBSQLCommands.InsertIntoSigns);
-            sqlCommand.Parameters.AddWithValue("Login", signUpModel.Login);
-            sqlCommand.Parameters.AddWithValue("Password", signUpModel.Password);
-            sqlCommand.Parameters.AddWithValue("Email", signUpModel.Email);
+            sqlCommand.Parameters.AddWithValue("Login", signInfo.Login);
+            sqlCommand.Parameters.AddWithValue("Password", signInfo.Password);
+            sqlCommand.Parameters.AddWithValue("Email", signInfo.Email);
             sqlCommand.Parameters.AddWithValue("RegistrationDate", DateTime.Now);
 
             Console.WriteLine(sqlCommand.ExecuteNonQuery().ToString());
         }
 
-        public SignedPlayerInfo TryToGetSignByLogin(string login)
+        public SignInfo TryToGetSignByLogin(string login)
         {
             using var sqlCommand = GetSqlCommand(ACDBSQLCommands.SelectFromSignsByLogin);
             sqlCommand.Parameters.AddWithValue("Login", login);
@@ -32,7 +32,7 @@ namespace AvoidContactServer.Database.Repositories
 
             if (sqlDataReader.Read())
             {
-                var signedPlayerModel = new SignedPlayerInfo()
+                var signedPlayerModel = new SignInfo()
                 {
                     Login = Convert.ToString(sqlDataReader["Login"]),
                     Password = Convert.ToString(sqlDataReader["Password"]),
@@ -42,7 +42,7 @@ namespace AvoidContactServer.Database.Repositories
             }
             else
             {
-                return new SignedPlayerInfo();
+                return new SignInfo();
             }
         }
 
